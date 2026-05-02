@@ -1,0 +1,267 @@
+/* Auth.module.css */
+
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  position: relative;
+}
+
+.authBg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.authGrid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(90, 150, 144, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 150, 144, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.authGlow1 {
+  position: absolute;
+  top: -20%;
+  left: 30%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(ellipse, rgba(47, 87, 85, 0.2) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.authGlow2 {
+  position: absolute;
+  bottom: -10%;
+  right: 20%;
+  width: 40%;
+  height: 50%;
+  background: radial-gradient(ellipse, rgba(67, 35, 35, 0.15) 0%, transparent 70%);
+  filter: blur(60px);
+}
+
+.authBox {
+  background: rgba(22, 10, 9, 0.85);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--border-default);
+  border-radius: 24px;
+  padding: 40px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
+}
+
+.authBoxWide {
+  max-width: 600px;
+}
+
+.authHeader {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.authLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-cream);
+  text-decoration: none;
+  margin-bottom: 24px;
+}
+
+.authLogoIcon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--color-teal-dark), var(--color-teal-light));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: white;
+}
+
+.authTitle {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-cream);
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.authSub {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.demoRow {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 24px;
+}
+
+.demoLabel {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+.demoBtns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.demoBtn {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--color-bg-card);
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demoBtn:hover {
+  color: var(--color-cream);
+  background: rgba(90, 150, 144, 0.08);
+}
+
+.authForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.authFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.authSwitch {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 24px;
+}
+
+.authSwitchLink {
+  color: var(--color-teal-light);
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.authSwitchLink:hover { color: var(--color-teal-lighter); }
+
+/* Role Selection */
+.roleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.roleCard {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.roleCard:hover {
+  border-color: var(--border-default);
+  color: var(--text-primary);
+  background: rgba(90, 150, 144, 0.05);
+}
+
+.roleCardSelected {
+  border-color: var(--color-teal-light) !important;
+  background: rgba(90, 150, 144, 0.08) !important;
+  color: var(--color-teal-light) !important;
+  box-shadow: 0 0 0 3px rgba(90, 150, 144, 0.12);
+}
+
+.roleCardLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: inherit;
+}
+
+.roleCardDesc {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Onboarding */
+.onboardingPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background: var(--color-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.onboardingBox {
+  width: 100%;
+  max-width: 640px;
+  position: relative;
+  z-index: 1;
+}
+
+.onboardingSteps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 40px;
+  justify-content: center;
+}
+
+.onboardingStep {
+  width: 32px;
+  height: 4px;
+  border-radius: 99px;
+  background: var(--border-subtle);
+  transition: background 0.3s ease;
+}
+
+.onboardingStepActive {
+  background: var(--color-teal-light);
+}
+
+.onboardingStepDone {
+  background: var(--color-teal-dark);
+}
+
+@media (max-width: 640px) {
+  .authBox { padding: 28px 20px; }
+  .roleGrid { grid-template-columns: 1fr; }
+}

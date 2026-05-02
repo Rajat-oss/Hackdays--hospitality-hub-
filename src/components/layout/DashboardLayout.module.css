@@ -1,0 +1,55 @@
+/* DashboardLayout.module.css */
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.sidebarWrapper {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  z-index: 50;
+}
+
+.mobileOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 49;
+  backdrop-filter: blur(4px);
+}
+
+.main {
+  flex: 1;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
+}
+
+.content {
+  padding: 28px 32px;
+  min-height: calc(100vh - var(--topbar-height));
+  max-width: 1400px;
+}
+
+@media (max-width: 768px) {
+  .mobileOverlay { display: block; }
+
+  .sidebarWrapper {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebarWrapperOpen {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0 !important;
+  }
+
+  .content {
+    padding: 20px 16px;
+  }
+}

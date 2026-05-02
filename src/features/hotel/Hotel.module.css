@@ -1,0 +1,314 @@
+/* Hotel.module.css */
+
+.dashPage {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.dashTitle {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.dashSub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Stats */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Charts */
+.chartsRow {
+  display: flex;
+  gap: 20px;
+}
+
+/* Bottom row */
+.bottomRow {
+  display: flex;
+  gap: 20px;
+}
+
+/* Room grid */
+.roomGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.roomCell {
+  aspect-ratio: 1.3;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.roomCell:hover { opacity: 0.8; transform: scale(1.05); }
+
+.room_available { background: rgba(76, 175, 130, 0.15); color: #4caf82; border: 1px solid rgba(76, 175, 130, 0.2); }
+.room_booked { background: rgba(90, 150, 144, 0.2); color: #5A9690; border: 1px solid rgba(90, 150, 144, 0.3); }
+.room_maintenance { background: rgba(212, 160, 23, 0.15); color: #d4a017; border: 1px solid rgba(212, 160, 23, 0.2); }
+.room_cleaning { background: rgba(67, 35, 35, 0.2); color: #a06060; border: 1px solid rgba(67, 35, 35, 0.3); }
+
+/* Room Management Page */
+.roomManagePage { display: flex; flex-direction: column; gap: 24px; }
+
+.pageActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filterRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtnActive {
+  color: var(--color-teal-light);
+  border-color: rgba(90, 150, 144, 0.4);
+  background: rgba(90, 150, 144, 0.08);
+  font-weight: 600;
+}
+
+/* Room cards grid */
+.roomCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.roomCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.roomCard:hover {
+  border-color: var(--border-default);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.roomCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.roomCardNumber {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.roomCardFloor {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.roomCardType {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-teal-light);
+  text-transform: capitalize;
+}
+
+.roomCardPrice {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.roomCardPriceSub {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.roomCardAmenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.amenityTag {
+  font-size: 10px;
+  padding: 3px 8px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-muted);
+}
+
+.roomCardActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Booking form */
+.bookingForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.bookingFormFull { grid-column: 1 / -1; }
+
+/* Guests */
+.guestGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.guestCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.2s ease;
+}
+
+.guestCard:hover { border-color: var(--border-default); }
+
+.guestAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--color-maroon), var(--color-maroon-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-cream);
+  margin-bottom: 14px;
+}
+
+.guestName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.guestPhone {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.guestMeta {
+  display: flex;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.guestMetaItem {}
+
+.guestMetaLabel {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.guestMetaValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+/* Finance */
+.financeStats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.txList { display: flex; flex-direction: column; gap: 8px; }
+
+.txItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+
+.txItem:hover { background: rgba(90, 150, 144, 0.04); }
+
+.txMethod {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.txIncome { color: #4caf82; font-size: '16px'; font-weight: 800; }
+.txExpense { color: #e74c3c; font-size: '16px'; font-weight: 800; }
+
+@media (max-width: 1200px) {
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
+  .financeStats { grid-template-columns: repeat(2, 1fr); }
+  .chartsRow { flex-direction: column; }
+  .bottomRow { flex-direction: column; }
+}
+
+@media (max-width: 768px) {
+  .statsGrid { grid-template-columns: 1fr; }
+  .roomGrid { grid-template-columns: repeat(4, 1fr); }
+  .bookingForm { grid-template-columns: 1fr; }
+  .bookingFormFull { grid-column: 1; }
+}

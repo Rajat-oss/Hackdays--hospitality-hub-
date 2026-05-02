@@ -1,0 +1,335 @@
+/* Restaurant.module.css */
+
+.dashPage { display: flex; flex-direction: column; gap: 24px; }
+.dashTitle { font-size: 26px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; }
+.dashSub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+.statsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.chartsRow { display: flex; gap: 20px; }
+
+/* Table Management */
+.tableFloor {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.tableCard {
+  background: var(--color-bg-card);
+  border: 2px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.tableCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.tableCardAvailable { border-color: rgba(76, 175, 130, 0.25); }
+.tableCardOccupied { border-color: rgba(192, 57, 43, 0.3); background: rgba(192, 57, 43, 0.04); }
+.tableCardReserved { border-color: rgba(212, 160, 23, 0.3); background: rgba(212, 160, 23, 0.04); }
+
+.tableNumber {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.tableCapacity { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+.tableLocation { font-size: 11px; color: var(--text-muted); opacity: 0.7; margin-bottom: 10px; }
+
+.tableActions { display: flex; gap: 6px; justify-content: center; margin-top: 10px; }
+
+/* Order Management */
+.ordersLayout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+}
+
+.ordersList { display: flex; flex-direction: column; gap: 12px; }
+
+.orderCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 18px 20px;
+  transition: all 0.2s ease;
+}
+
+.orderCard:hover { border-color: var(--border-default); }
+
+.orderCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.orderTableName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.orderTime {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.orderItems { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.orderItemChip {
+  font-size: 11px;
+  padding: 3px 10px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  color: var(--text-secondary);
+}
+
+.orderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.orderAmount {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-cream);
+}
+
+.orderStatusBtns { display: flex; gap: 6px; }
+
+/* New Order Panel */
+.newOrderPanel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 20px;
+  position: sticky;
+  top: calc(var(--topbar-height) + 20px);
+  max-height: calc(100vh - var(--topbar-height) - 60px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.newOrderTitle { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+
+.menuCategories { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.catBtn {
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.catBtnActive {
+  color: var(--color-teal-light);
+  border-color: rgba(90,150,144,0.4);
+  background: rgba(90,150,144,0.08);
+}
+
+.menuItemRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.menuItemRow:last-child { border-bottom: none; }
+
+.menuItemName { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.menuItemPrice { font-size: 12px; color: var(--text-muted); }
+
+.qtyControl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qtyBtn {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.qtyBtn:hover { background: rgba(90,150,144,0.1); border-color: var(--color-teal-light); }
+
+.qtyValue { font-size: 14px; font-weight: 700; color: var(--text-primary); min-width: '20px'; text-align: center; }
+
+.orderSummary {
+  background: var(--color-bg-elevated);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 4px;
+}
+
+/* Kitchen */
+.kitchenGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+.kitchenCard {
+  border: 2px solid var(--border-default);
+  border-radius: 16px;
+  padding: 18px;
+  transition: all 0.2s ease;
+}
+
+.kitchenCardPending { border-color: rgba(212, 160, 23, 0.4); background: rgba(212, 160, 23, 0.04); }
+.kitchenCardPreparing { border-color: rgba(90, 150, 144, 0.4); background: rgba(90, 150, 144, 0.04); }
+.kitchenCardReady { border-color: rgba(76, 175, 130, 0.5); background: rgba(76, 175, 130, 0.05); }
+
+.kitchenCardHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.kitchenTableName { font-size: 18px; font-weight: 800; color: var(--text-primary); }
+.kitchenTime { font-size: 12px; color: var(--text-muted); }
+
+.kitchenItemsList { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.kitchenItem { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); }
+.kitchenItemQty { font-weight: 700; color: var(--text-primary); }
+
+/* Menu Manager */
+.menuGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+
+.menuCard {
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px;
+  transition: all 0.2s ease;
+}
+
+.menuCard:hover { border-color: var(--border-default); }
+
+.menuCardCat {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-teal-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.menuCardName {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.menuCardDesc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.menuCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.menuCardPrice {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-cream);
+}
+
+/* Billing */
+.billLayout { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+
+.billInvoice {
+  background: var(--color-bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.billHeader {
+  text-align: center;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px dashed var(--border-default);
+}
+
+.billBusinessName { font-size: 22px; font-weight: 800; color: var(--text-primary); }
+.billSubtitle { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+.billItems { margin-bottom: 20px; }
+
+.billItemRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.billItemRow:last-child { border-bottom: none; }
+
+.billTotals { border-top: 2px solid var(--border-default); padding-top: 14px; }
+
+.billTotalRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.billGrandTotal {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border-default);
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-cream);
+}
+
+@media (max-width: 1200px) {
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
+  .ordersLayout { grid-template-columns: 1fr; }
+  .billLayout { grid-template-columns: 1fr; }
+  .chartsRow { flex-direction: column; }
+}
+
+@media (max-width: 768px) {
+  .statsGrid { grid-template-columns: 1fr; }
+  .tableFloor { grid-template-columns: repeat(2, 1fr); }
+}
