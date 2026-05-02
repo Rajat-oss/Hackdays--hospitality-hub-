@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { Fragment } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../features/auth/AuthContext'
 import {
   LayoutDashboard, BedDouble, CalendarCheck, Users, DollarSign,
   UtensilsCrossed, Table2, ClipboardList, ChefHat, Receipt,
   BarChart3, Settings, Bell, LogOut, ChevronLeft, ChevronRight,
-  Building2, Package, Menu, Globe
+  Building2, Menu, Globe
 } from 'lucide-react'
 import type { UserRole } from '../../types'
 import styles from './Sidebar.module.css'
@@ -84,12 +84,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
       {/* Nav */}
       <nav className={`${styles.sidebarNav} sidebar-scroll`}>
-        {visibleItems.map((item, i) => {
+        {visibleItems.map((item) => {
           const showSection = item.section && item.section !== lastSection
           if (item.section) lastSection = item.section
 
           return (
-            <React.Fragment key={item.to}>
+            <Fragment key={item.to}>
               {showSection && !collapsed && (
                 <div className={styles.navSection}>{item.section}</div>
               )}
@@ -106,7 +106,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 {!collapsed && <span className={styles.navLabel}>{item.label}</span>}
                 {!collapsed && <span className={styles.navActiveIndicator} />}
               </NavLink>
-            </React.Fragment>
+            </Fragment>
           )
         })}
       </nav>
