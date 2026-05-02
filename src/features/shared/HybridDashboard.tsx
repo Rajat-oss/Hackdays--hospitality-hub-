@@ -1,4 +1,3 @@
-import React from 'react'
 import { useHotelStore, useRestaurantStore } from '../../store'
 import { useAuth } from '../../features/auth/AuthContext'
 import { 
@@ -7,7 +6,7 @@ import {
 } from 'recharts'
 import { 
   Building2, BedDouble, UtensilsCrossed, Users, DollarSign, 
-  ArrowUpRight, ArrowDownRight, Activity
+  ArrowUpRight, Activity
 } from 'lucide-react'
 import hotelStyles from '../hotel/Hotel.module.css'
 

@@ -5,7 +5,7 @@ import {
   LayoutDashboard, BedDouble, CalendarCheck, Users, DollarSign,
   UtensilsCrossed, Table2, ClipboardList, ChefHat, Receipt,
   BarChart3, Settings, Bell, LogOut, ChevronLeft, ChevronRight,
-  Building2, Menu, Globe
+  Building2, Globe
 } from 'lucide-react'
 import type { UserRole } from '../../types'
 import styles from './Sidebar.module.css'

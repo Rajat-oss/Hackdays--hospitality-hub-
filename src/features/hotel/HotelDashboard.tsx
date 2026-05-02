@@ -1,11 +1,10 @@
-import React from 'react'
 import { useHotelStore } from '../../store'
 import { useAuth } from '../../features/auth/AuthContext'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar
 } from 'recharts'
-import { BedDouble, TrendingUp, Users, DollarSign, CalendarCheck, AlertCircle, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { BedDouble, Users, DollarSign, AlertCircle, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { format, differenceInDays } from 'date-fns'
 import styles from './Hotel.module.css'
 

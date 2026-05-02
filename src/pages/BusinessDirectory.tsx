@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { collection, getDocs, query } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import type { Business } from '../types'

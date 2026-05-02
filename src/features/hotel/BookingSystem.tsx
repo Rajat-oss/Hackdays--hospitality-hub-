@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useHotelStore } from '../../store'
 import { useAuth } from '../auth/AuthContext'
 import { Plus, Search, CalendarCheck } from 'lucide-react'
@@ -17,7 +17,7 @@ const FILTERS: { label: string; value: BookingStatus | 'all' }[] = [
 
 export default function BookingSystem() {
   const { profile } = useAuth()
-  const { bookings, rooms, guests, addBooking, updateBooking, addGuest } = useHotelStore()
+  const { bookings, rooms, addBooking, updateBooking, addGuest } = useHotelStore()
   const businessId = profile?.business_id || ''
   const [filter, setFilter] = useState<BookingStatus | 'all'>('all')
   const [search, setSearch] = useState('')

@@ -3,7 +3,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../../lib/firebase'
 import { useAuth } from '../auth/AuthContext'
 import { toast } from 'react-hot-toast'
-import { Save, Image as ImageIcon, Globe, Eye, Sparkles, Upload, X } from 'lucide-react'
+import { Save, Globe, Eye, Sparkles, Upload, X } from 'lucide-react'
 import type { Business } from '../../types'
 import { enhanceStorefrontDescription } from '../../lib/gemini'
 

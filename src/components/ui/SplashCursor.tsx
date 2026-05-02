@@ -105,7 +105,7 @@ export default function SplashCursor({
     }
 
     const BASE_V = `precision highp float;attribute vec2 aPosition;varying vec2 vUv,vL,vR,vT,vB;uniform vec2 texelSize;void main(){vUv=aPosition*.5+.5;vL=vUv-vec2(texelSize.x,0);vR=vUv+vec2(texelSize.x,0);vT=vUv+vec2(0,texelSize.y);vB=vUv-vec2(0,texelSize.y);gl_Position=vec4(aPosition,0,1);}`
-    const COPY_F = `precision mediump float;precision mediump sampler2D;varying highp vec2 vUv;uniform sampler2D uTexture;void main(){gl_FragColor=texture2D(uTexture,vUv);}`
+    
     const CLEAR_F = `precision mediump float;precision mediump sampler2D;varying highp vec2 vUv;uniform sampler2D uTexture;uniform float value;void main(){gl_FragColor=value*texture2D(uTexture,vUv);}`
     const DISPLAY_F = `precision highp float;precision highp sampler2D;varying vec2 vUv,vL,vR,vT,vB;uniform sampler2D uTexture;uniform vec2 texelSize;void main(){vec3 c=texture2D(uTexture,vUv).rgb;#ifdef SHADING\nvec3 lc=texture2D(uTexture,vL).rgb,rc=texture2D(uTexture,vR).rgb,tc=texture2D(uTexture,vT).rgb,bc=texture2D(uTexture,vB).rgb;float dx=length(rc)-length(lc),dy=length(tc)-length(bc);vec3 n=normalize(vec3(dx,dy,length(texelSize)));float diffuse=clamp(dot(n,vec3(0,0,1))+.7,.7,1.);c*=diffuse;#endif\nfloat a=max(c.r,max(c.g,c.b));gl_FragColor=vec4(c,a);}`
     const SPLAT_F = `precision highp float;precision highp sampler2D;varying vec2 vUv;uniform sampler2D uTarget;uniform float aspectRatio;uniform vec3 color;uniform vec2 point;uniform float radius;void main(){vec2 p=vUv-point;p.x*=aspectRatio;vec3 sp=exp(-dot(p,p)/radius)*color;gl_FragColor=vec4(texture2D(uTarget,vUv).xyz+sp,1);}`
@@ -124,7 +124,7 @@ export default function SplashCursor({
       return { prog: p, u: getUni(p), bind() { gl.useProgram(p) } }
     }
 
-    const copyP = Prog(COPY_F), clearP = Prog(CLEAR_F), splatP = Prog(SPLAT_F)
+    const clearP = Prog(CLEAR_F), splatP = Prog(SPLAT_F)
     const advP = Prog(ADV_F, ext.supportLinearFiltering ? undefined : ['MANUAL_FILTERING'])
     const divP = Prog(DIV_F), curlP = Prog(CURL_F), vortP = Prog(VORT_F), presP = Prog(PRES_F), gradP = Prog(GRAD_F)
 

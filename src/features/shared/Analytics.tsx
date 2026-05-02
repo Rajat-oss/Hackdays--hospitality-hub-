@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useHotelStore, useRestaurantStore } from '../../store'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { TrendingUp, Hotel, UtensilsCrossed, Sparkles, Brain } from 'lucide-react'

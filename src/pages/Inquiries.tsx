@@ -6,7 +6,7 @@ import { Bell, CheckCircle, Trash2, Sparkles } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { format } from 'date-fns'
 import { generateInquiryReply } from '../lib/gemini'
-import { useHotelStore } from '../store'
+
 
 interface Inquiry {
   id: string

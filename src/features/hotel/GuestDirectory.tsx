@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useHotelStore } from '../../store'
-import { Search, Phone, Mail, MapPin, Star } from 'lucide-react'
+import { Search, Mail, MapPin, Star } from 'lucide-react'
 import styles from './Hotel.module.css'
 
 export default function GuestDirectory() {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useHotelStore } from '../../store'
 import { useAuth } from '../auth/AuthContext'
 import { Plus, Edit2, Trash2, Search, Sparkles } from 'lucide-react'

@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRestaurantStore } from '../../store'
 import { Receipt, Printer } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import styles from './Restaurant.module.css'
 
-const GST_RATE = 12
+
 
 export default function Billing() {
-  const { orders, updateOrder, tables } = useRestaurantStore()
+  const { orders, updateOrder } = useRestaurantStore()
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'upi' | 'card'>('cash')
 
