@@ -50,7 +50,7 @@ export default function Landing() {
           <span className={s.logoName}>HospitalityHub</span>
         </Link>
         <div className={s.navCta}>
-          <Link to="/businesses" className={s.navLink}>book </Link>
+          <Link to="/businesses" className={s.navLink}>Book</Link>
           <Link to="/login" className={s.navLink}>Member Portal</Link>
           <Link to="/signup" className={s.btnGold}>Inquire Now</Link>
         </div>
@@ -70,7 +70,7 @@ export default function Landing() {
         </div>
 
         <div className={s.heroImgWrap}>
-          <ImgPlaceholder className={s.heroMainImg} text="Cinematic Hero Image Placeholder (16:9)" />
+          <img src="/hero.jfif" alt="Cinematic Hero" className={s.heroMainImg} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
       </section>
 
@@ -101,11 +101,11 @@ export default function Landing() {
             <Link to="/signup" className={s.btnGold}>Explore Hotel Suite</Link>
           </div>
           <div data-r>
-            <img 
-              src="/hotel1.jfif" 
-              alt="The Residency" 
-              className={s.edImgTall} 
-              style={{ width: '100%', objectFit: 'cover', display: 'block' }} 
+            <img
+              src="/hotel1.jfif"
+              alt="The Residency"
+              className={s.edImgTall}
+              style={{ width: '100%', objectFit: 'cover', display: 'block' }}
             />
           </div>
         </div>
@@ -113,11 +113,11 @@ export default function Landing() {
 
       {/* ── FULL WIDTH SHOWCASE ────────────────────────────── */}
       <section className={s.fwImgWrap} data-r>
-        <img 
-          src="/hotel2.jfif" 
-          alt="Luxury Property View" 
-          className={s.fwImg} 
-          style={{ width: '100%', objectFit: 'cover', display: 'block' }} 
+        <img
+          src="/hotel2.jfif"
+          alt="Luxury Property View"
+          className={s.fwImg}
+          style={{ width: '100%', objectFit: 'cover', display: 'block' }}
         />
       </section>
 
@@ -133,7 +133,7 @@ export default function Landing() {
             <Link to="/signup" className={s.btnGold}>Discover Restaurant</Link>
           </div>
           <div data-r>
-            <ImgPlaceholder className={s.edImgTall} text="Portrait Image: Fine Dining Setup" />
+            <img src="/rest1.jfif" alt="Fine Dining Setup" className={s.edImgTall} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         </div>
       </section>
@@ -163,7 +163,9 @@ export default function Landing() {
               <div className={s.bT}>Hybrid Command</div>
               <div className={s.bD}>Manage hospitality and gastronomy concurrently without ever switching contexts.</div>
             </div>
-            <ImgPlaceholder className={s.bImgLg} text="Dashboard Snapshot" />
+            <div className={s.bImgLg} style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(0,0,0,0) 100%)', border: '1px solid rgba(212,175,55,0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src="/hotel2.jfif" alt="Dashboard" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px', opacity: 0.7 }} />
+            </div>
           </div>
 
           {/* Card 2 */}
@@ -172,7 +174,10 @@ export default function Landing() {
               <div className={s.bT}>Live Analytics</div>
               <div className={s.bD}>Revenue, metrics, and KPI tracking in real-time, presented with extreme clarity.</div>
             </div>
-            <ImgPlaceholder className={s.bImg} text="Chart Preview" />
+            <div className={s.bImg} style={{ background: 'linear-gradient(135deg, #1a2a1a 0%, #0a0a0a 100%)', border: '1px solid rgba(26,182,79,0.15)', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <div style={{ fontSize: '2rem', fontWeight: 900, color: '#1ab64f' }}>99%</div>
+              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Occupancy</div>
+            </div>
           </div>
 
           {/* Card 3 */}
@@ -181,16 +186,22 @@ export default function Landing() {
               <div className={s.bT}>GST &amp; Accounting</div>
               <div className={s.bD}>Auto-calculated splits, audit-proof logs, and immaculate folio generation.</div>
             </div>
-            <ImgPlaceholder className={s.bImg} text="Invoice Graphic" />
+            <div className={s.bImg} style={{ background: 'linear-gradient(135deg, #1a1500 0%, #0a0a0a 100%)', border: '1px solid rgba(212,175,55,0.15)', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--gold, #D4AF37)' }}>₹14L+</div>
+              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>Daily Revenue</div>
+            </div>
           </div>
 
           {/* Card 4 */}
           <div className={`${s.bCard} ${s.c6}`} data-r>
             <div>
-              <div className={s.bT}>Supabase Secured</div>
+              <div className={s.bT}>Firebase Secured</div>
               <div className={s.bD}>Bank-grade encryption, instant synchronization, and role-based access controls.</div>
             </div>
-            <ImgPlaceholder className={s.bImg} text="Architecture Abstract" />
+            <div className={s.bImg} style={{ background: 'linear-gradient(135deg, #0a1520 0%, #0a0a0a 100%)', border: '1px solid rgba(66,135,245,0.15)', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: '#4287f5' }}>🔒</div>
+              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', letterSpacing: '2px', textTransform: 'uppercase' }}>End-to-End</div>
+            </div>
           </div>
         </div>
       </section>

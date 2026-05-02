@@ -1,23 +1,43 @@
 import React, { useState } from 'react'
 import { useRestaurantStore } from '../../store'
-import { Plus, Edit2, Trash2 } from 'lucide-react'
+import { useAuth } from '../auth/AuthContext'
+import { Plus, Trash2, Sparkles } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { enhanceStorefrontDescription } from '../../lib/gemini'
 import styles from './Restaurant.module.css'
 
 export default function MenuManager() {
+  const { profile } = useAuth()
   const { menu, addMenuItem, updateMenuItem } = useRestaurantStore()
+  const businessId = profile?.business_id || ''
   const [activeCategory, setActiveCategory] = useState('All')
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({ name: '', category: 'Starters', price: '', description: '', is_vegetarian: true, is_available: true })
+  const [magicLoading, setMagicLoading] = useState(false)
 
   const categories = ['All', ...Array.from(new Set(menu.map(m => m.category)))]
   const filtered = activeCategory === 'All' ? menu : menu.filter(m => m.category === activeCategory)
 
+  async function handleMagicRewrite() {
+    if (!form.name) return toast.error("Enter item name first!")
+    setMagicLoading(true)
+    try {
+      const res = await enhanceStorefrontDescription(`${form.name} (${form.category}) - ${form.description || 'delicious dish'}`)
+      setForm(p => ({ ...p, description: res }))
+      toast.success("AI Rewrote your menu description!")
+    } catch (err) {
+      toast.error("AI rewrite failed")
+    } finally {
+      setMagicLoading(false)
+    }
+  }
+
   function handleAdd() {
     if (!form.name || !form.price) return toast.error('Fill required fields')
-    addMenuItem({ id: `m${Date.now()}`, business_id: 'biz-rest-001', name: form.name, category: form.category, price: +form.price, description: form.description, is_vegetarian: form.is_vegetarian, is_available: form.is_available, created_at: new Date().toISOString() })
+    addMenuItem({ business_id: businessId, name: form.name, category: form.category, price: +form.price, description: form.description, is_vegetarian: form.is_vegetarian, is_available: form.is_available })
     toast.success('Menu item added')
     setShowModal(false)
+    setForm({ name: '', category: 'Starters', price: '', description: '', is_vegetarian: true, is_available: true })
   }
 
   function toggleAvail(id: string, current: boolean) {
@@ -95,7 +115,17 @@ export default function MenuManager() {
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Description</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <label className="form-label">Description</label>
+                  <button 
+                    onClick={handleMagicRewrite} 
+                    disabled={magicLoading}
+                    className="btn btn-sm btn-ghost" 
+                    style={{ color: 'var(--color-teal-light)', fontSize: '11px', gap: '4px', height: '24px' }}
+                  >
+                    {magicLoading ? '...' : <Sparkles size={12} />} Magic Rewrite
+                  </button>
+                </div>
                 <input className="form-input" value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} placeholder="Short description" />
               </div>
               <div style={{ display: 'flex', gap: '16px' }}>

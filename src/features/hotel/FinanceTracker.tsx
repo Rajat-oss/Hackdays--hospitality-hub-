@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { useHotelStore } from '../../store'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { TrendingUp, TrendingDown, DollarSign, CreditCard, Wallet } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, CreditCard, Wallet, ShieldCheck, Sparkles } from 'lucide-react'
+import { auditTransactions } from '../../lib/gemini'
+import { toast } from 'react-hot-toast'
 import styles from './Hotel.module.css'
 
 const MONTHLY = [
@@ -17,10 +19,26 @@ const MONTHLY = [
 export default function FinanceTracker() {
   const { transactions } = useHotelStore()
   const [methodFilter, setMethodFilter] = useState('all')
+  const [auditResult, setAuditResult] = useState<string | null>(null)
+  const [auditing, setAuditing] = useState(false)
 
   const income = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
   const expense = transactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
   const net = income - expense
+
+  async function handleAudit() {
+    if (transactions.length === 0) return toast.error("No transactions to audit")
+    setAuditing(true)
+    const history = transactions.map(t => `${t.type}: ₹${t.amount} (${t.description}) via ${t.payment_method}`).join('\n')
+    try {
+      const res = await auditTransactions(history)
+      setAuditResult(res)
+    } catch (err) {
+      toast.error("Audit failed")
+    } finally {
+      setAuditing(false)
+    }
+  }
 
   const cashTx = transactions.filter(t => t.payment_method === 'cash')
   const upiTx = transactions.filter(t => t.payment_method === 'upi')
@@ -30,10 +48,34 @@ export default function FinanceTracker() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div>
-        <h1 className="page-title">Finance & Revenue</h1>
-        <p className="page-subtitle">All transactions and financial summary</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 className="page-title">Finance & Revenue</h1>
+          <p className="page-subtitle">All transactions and financial summary</p>
+        </div>
+        <button 
+          onClick={handleAudit} 
+          disabled={auditing}
+          className="btn btn-secondary" 
+          style={{ gap: '8px', color: 'var(--color-teal-light)', borderColor: 'rgba(90,150,144,0.3)' }}
+        >
+          {auditing ? <span className="spinner" /> : <ShieldCheck size={18} />}
+          {auditing ? 'Auditing...' : 'AI Financial Audit'}
+        </button>
       </div>
+
+      {auditResult && (
+        <div className="card" style={{ background: 'rgba(192,57,43,0.05)', border: '1px solid rgba(192,57,43,0.2)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px', color: '#e74c3c' }}>
+            <Sparkles size={16} />
+            <span style={{ fontWeight: 700, fontSize: '14px' }}>AI Audit Results</span>
+          </div>
+          <div style={{ fontSize: '13px', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>
+            {auditResult}
+          </div>
+          <button onClick={() => setAuditResult(null)} style={{ marginTop: '12px', fontSize: '11px', color: 'var(--text-muted)', textDecoration: 'underline' }}>Clear audit</button>
+        </div>
+      )}
 
       {/* Stats */}
       <div className={styles.financeStats}>

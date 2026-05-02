@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useRestaurantStore } from '../../store'
+import { useAuth } from '../auth/AuthContext'
 import { Plus } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import type { Order, OrderStatus } from '../../types'
@@ -8,7 +9,9 @@ import styles from './Restaurant.module.css'
 const STATUS_FLOW: OrderStatus[] = ['pending', 'preparing', 'ready', 'served', 'billed']
 
 export default function OrderManagement() {
+  const { profile } = useAuth()
   const { tables, menu, orders, addOrder, updateOrder } = useRestaurantStore()
+  const businessId = profile?.business_id || ''
   const [showNew, setShowNew] = useState(false)
   const [selectedTable, setSelectedTable] = useState('')
   const [quantities, setQuantities] = useState<Record<string, number>>({})
@@ -40,20 +43,15 @@ export default function OrderManagement() {
     }))
     if (!items.length) return toast.error('Add at least one item')
 
-    const newOrder: Order = {
-      id: `o${Date.now()}`,
-      business_id: 'biz-rest-001',
+    const orderData = {
+      business_id: businessId,
       table_id: selectedTable,
-      status: 'pending',
+      status: 'pending' as OrderStatus,
       total_amount: orderTotal,
       gst_amount: gstAmount,
-      created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      table: tables.find(t => t.id === selectedTable),
-      items: items.map(i => ({ ...i, order_id: `o${Date.now()}` })),
     }
-    addOrder(newOrder)
-    updateOrder(newOrder.id, {})
+    addOrder(orderData, items)
     toast.success(`Order placed for Table ${tables.find(t => t.id === selectedTable)?.number}!`)
     setQuantities({})
     setSelectedTable('')

@@ -1,8 +1,9 @@
-import React from 'react'
-import { useHotelStore } from '../../store'
-import { useRestaurantStore } from '../../store'
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
-import { TrendingUp, Hotel, UtensilsCrossed } from 'lucide-react'
+import React, { useState } from 'react'
+import { useHotelStore, useRestaurantStore } from '../../store'
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { TrendingUp, Hotel, UtensilsCrossed, Sparkles, Brain } from 'lucide-react'
+import { getBusinessStrategy } from '../../lib/gemini'
+import { toast } from 'react-hot-toast'
 
 const MONTHLY = [
   { month: 'Oct', hotel: 180000, restaurant: 92000 },
@@ -17,17 +18,63 @@ const MONTHLY = [
 export default function Analytics() {
   const { rooms, bookings, transactions } = useHotelStore()
   const { orders, tables } = useRestaurantStore()
+  const [aiInsights, setAiInsights] = useState<string | null>(null)
+  const [loadingAi, setLoadingAi] = useState(false)
 
   const hotelRevenue = transactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
   const restaurantRevenue = orders.reduce((s, o) => s + o.total_amount + o.gst_amount, 0)
   const totalRevenue = hotelRevenue + restaurantRevenue
 
+  async function handleConsultAI() {
+    setLoadingAi(true)
+    const summary = `
+      Total Revenue: ₹${totalRevenue},
+      Hotel Revenue: ₹${hotelRevenue},
+      Restaurant Revenue: ₹${restaurantRevenue},
+      Occupancy: ${Math.round((rooms.filter(r => r.status === 'booked').length / rooms.length) * 100)}%,
+      Active Orders: ${orders.filter(o => o.status !== 'billed').length},
+      Total Rooms: ${rooms.length},
+      Total Tables: ${tables.length}
+    `
+    try {
+      const result = await getBusinessStrategy(summary)
+      setAiInsights(result)
+    } catch (err) {
+      toast.error("Failed to get AI insights")
+    } finally {
+      setLoadingAi(false)
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <div>
-        <h1 className="page-title">Analytics</h1>
-        <p className="page-subtitle">Combined performance across hotel and restaurant</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 className="page-title">Analytics</h1>
+          <p className="page-subtitle">Combined performance across hotel and restaurant</p>
+        </div>
+        <button 
+          onClick={handleConsultAI} 
+          disabled={loadingAi}
+          className="btn btn-primary" 
+          style={{ gap: '10px', padding: '12px 20px' }}
+        >
+          {loadingAi ? <span className="spinner" /> : <Brain size={18} />} 
+          {loadingAi ? 'AI Thinking...' : 'Consult AI Strategist'}
+        </button>
       </div>
+
+      {aiInsights && (
+        <div className="card" style={{ background: 'linear-gradient(135deg, rgba(90,150,144,0.1) 0%, rgba(22,10,9,1) 100%)', border: '1px solid var(--color-teal-light)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', color: 'var(--color-teal-light)' }}>
+            <Sparkles size={18} />
+            <h3 style={{ fontSize: '16px', fontWeight: 700 }}>AI Strategic Insights</h3>
+          </div>
+          <div style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+            {aiInsights}
+          </div>
+        </div>
+      )}
 
       {/* Summary Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>

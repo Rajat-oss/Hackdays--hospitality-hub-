@@ -46,16 +46,8 @@ export default function SignupPage() {
       return
     }
 
-    if (!session) {
-      toast.success('Account created! Please check your email to confirm your account.', {
-        duration: 6000,
-      })
-      navigate('/login')
-      return
-    }
-
-    toast.success('Account created! Welcome to HospitalityHub.')
-    navigate('/dashboard')
+    toast.success('Account created! Please sign in to access your dashboard.')
+    navigate('/login')
   }
 
   function selectRole(role: UserRole) {

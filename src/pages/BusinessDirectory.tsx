@@ -3,20 +3,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import type { Business } from '../types'
-import { Building2, Star, Wifi, Tv, Battery, Phone, Crosshair, Moon, Sun, Filter } from 'lucide-react'
-
-const LOCATIONS = ['Majestic', 'Koramangala', 'Marathahalli', 'HSR Layout', 'Indiranagar']
+import { Building2, Star, Wifi, Tv, Battery, Filter } from 'lucide-react'
 
 export default function BusinessDirectory() {
   const [businesses, setBusinesses] = useState<Business[]>([])
   const [loading, setLoading] = useState(true)
-  const [isDarkTheme, setIsDarkTheme] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const navigate = useNavigate()
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([])
+  const [selectedType, setSelectedType] = useState<string>('all')
   const [priceRange, setPriceRange] = useState<number>(10000)
   const [sortBy, setSortBy] = useState('popularity')
 
@@ -42,14 +39,6 @@ export default function BusinessDirectory() {
     fetchBusinesses()
   }, [])
 
-  const toggleLocation = (loc: string) => {
-    if (selectedLocations.includes(loc)) {
-      setSelectedLocations(selectedLocations.filter(l => l !== loc))
-    } else {
-      setSelectedLocations([...selectedLocations, loc])
-    }
-  }
-
   const filteredBusinesses = useMemo(() => {
     return businesses.filter(biz => {
       // text search (name or address)
@@ -60,12 +49,15 @@ export default function BusinessDirectory() {
         if (!matchesName && !matchesAddress) return false
       }
       
-      // location pills
-      if (selectedLocations.length > 0) {
-        if (!biz.address) return false
-        const addrLower = biz.address.toLowerCase()
-        const matchesLoc = selectedLocations.some(loc => addrLower.includes(loc.toLowerCase()))
-        if (!matchesLoc) return false
+      // business type filter
+      if (selectedType !== 'all') {
+        if (selectedType === 'hotel') {
+          if (biz.type !== 'hotel' && biz.type !== 'both') return false;
+        } else if (selectedType === 'restaurant') {
+          if (biz.type !== 'restaurant' && biz.type !== 'both') return false;
+        } else if (selectedType === 'both') {
+          if (biz.type !== 'both') return false;
+        }
       }
       
       // price range
@@ -91,22 +83,10 @@ export default function BusinessDirectory() {
       }
       return 0 // default popularity
     })
-  }, [businesses, searchTerm, selectedLocations, priceRange, sortBy])
+  }, [businesses, searchTerm, selectedType, priceRange, sortBy])
 
   const oyoStyles = `
     .oyo-wrapper {
-      --oyo-bg: #f8f9fa;
-      --oyo-card-bg: #fff;
-      --oyo-text: #222;
-      --oyo-text-muted: #666;
-      --oyo-border: #e0e0e0;
-      --oyo-pill-bg: #f3f4f5;
-      --oyo-primary: #e52b50;
-      --oyo-success: #1ab64f;
-      --oyo-image-bg: #eee;
-    }
-
-    .oyo-wrapper.dark-theme {
       --oyo-bg: #0a0a0a;
       --oyo-card-bg: #111;
       --oyo-text: #fff;
@@ -114,6 +94,8 @@ export default function BusinessDirectory() {
       --oyo-border: #333;
       --oyo-pill-bg: #222;
       --oyo-image-bg: #1a1a1a;
+      --oyo-primary: #e52b50;
+      --oyo-success: #1ab64f;
     }
 
     .oyo-container {
@@ -170,13 +152,6 @@ export default function BusinessDirectory() {
     .sidebar-section { margin-bottom: 32px; }
     .sidebar-title { font-size: 24px; font-weight: 800; margin-bottom: 16px; color: var(--oyo-text); }
     .sidebar-subtitle { font-size: 15px; font-weight: 700; margin-bottom: 12px; color: var(--oyo-text); }
-    .location-pill {
-      display: inline-block; padding: 8px 12px; background: var(--oyo-pill-bg); border: 1px solid var(--oyo-border); border-radius: 4px; font-size: 13px; margin: 0 8px 8px 0; color: var(--oyo-text); cursor: pointer; transition: all 0.2s;
-    }
-    .location-pill.active {
-      background: var(--oyo-primary); color: #fff; border-color: var(--oyo-primary);
-    }
-    .view-more { color: var(--oyo-primary); font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; }
     
     /* Custom Range Slider */
     input[type=range] {
@@ -194,7 +169,6 @@ export default function BusinessDirectory() {
       flex: 1; padding: 16px; background: var(--oyo-bg);
     }
     .content-header { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-    .breadcrumbs { font-size: 12px; color: var(--oyo-text-muted); margin-bottom: 8px; }
     .content-title { font-size: 20px; font-weight: 800; margin: 0; color: var(--oyo-text); }
     
     .mobile-filter-btn {
@@ -258,7 +232,7 @@ export default function BusinessDirectory() {
   `
 
   return (
-    <div className={`oyo-wrapper ${isDarkTheme ? 'dark-theme' : ''}`}>
+    <div className="oyo-wrapper">
       <style>{oyoStyles}</style>
       <div className="oyo-container">
         
@@ -271,38 +245,13 @@ export default function BusinessDirectory() {
               <div className="search-input-group" style={{ flex: 1 }}>
                 <input 
                   type="text" 
-                  placeholder="Search by city or hotel..." 
+                  placeholder="Search by name or address..." 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--oyo-text)', background: 'var(--oyo-pill-bg)', padding: '4px 8px', borderRadius: '12px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                   <Crosshair size={14} /> Near me
-                </div>
               </div>
-              <div className="search-input-group" style={{ width: '240px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>Sat, 2 May – Sun, 3 May</span>
-              </div>
-              <div className="search-input-group" style={{ width: '160px', borderRight: 'none' }}>
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>1 Room, 1 Guest</span>
-              </div>
-              <button className="search-btn">Search</button>
-            </div>
-            
-            <div className="header-right">
-              {/* Theme Toggle */}
-              <button 
-                onClick={() => setIsDarkTheme(!isDarkTheme)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--oyo-text)' }}
-              >
-                {isDarkTheme ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              
-              <div style={{ display: 'none', alignItems: 'center', gap: '8px' }} className="desktop-only-phone">
-                <Phone size={20} color="var(--oyo-text-muted)" />
-                <div>
-                  <div style={{ fontWeight: 800 }}>0124-6201611</div>
-                  <div style={{ fontSize: '11px', color: 'var(--oyo-text-muted)', fontWeight: 400 }}>Call us to Book now</div>
-                </div>
+              <div style={{ padding: '0 16px', display: 'flex', alignItems: 'center', color: 'var(--oyo-text-muted)', fontSize: '13px', whiteSpace: 'nowrap' }}>
+                {filteredBusinesses.length} properties found
               </div>
             </div>
           </div>
@@ -317,22 +266,26 @@ export default function BusinessDirectory() {
               <div className="sidebar-subtitle">Search</div>
               <input 
                 type="text" 
-                placeholder="Search hotels, addresses.." 
+                placeholder="Search addresses, names.." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{ width: '100%', padding: '10px', border: '1px solid var(--oyo-border)', borderRadius: '4px', marginBottom: '16px', outline: 'none', background: 'var(--oyo-bg)', color: 'var(--oyo-text)' }} 
               />
-              <div className="sidebar-subtitle">Popular locations</div>
-              <div>
-                {LOCATIONS.map(loc => (
-                  <span 
-                    key={loc}
-                    className={`location-pill ${selectedLocations.includes(loc) ? 'active' : ''}`}
-                    onClick={() => toggleLocation(loc)}
-                  >
-                    {loc}
-                  </span>
-                ))}
+              
+              <div className="sidebar-subtitle">Business Type</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', cursor: 'pointer' }}>
+                  <input type="radio" name="type" checked={selectedType === 'all'} onChange={() => setSelectedType('all')} style={{ marginRight: '8px' }} /> All
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', cursor: 'pointer' }}>
+                  <input type="radio" name="type" checked={selectedType === 'hotel'} onChange={() => setSelectedType('hotel')} style={{ marginRight: '8px' }} /> Hotel
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', cursor: 'pointer' }}>
+                  <input type="radio" name="type" checked={selectedType === 'restaurant'} onChange={() => setSelectedType('restaurant')} style={{ marginRight: '8px' }} /> Restaurant
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', cursor: 'pointer' }}>
+                  <input type="radio" name="type" checked={selectedType === 'both'} onChange={() => setSelectedType('both')} style={{ marginRight: '8px' }} /> Hybrid (Both)
+                </label>
               </div>
             </div>
             
@@ -350,24 +303,11 @@ export default function BusinessDirectory() {
                 <span>₹500</span><span>₹10000+</span>
               </div>
             </div>
-
-            <div className="sidebar-section" style={{ borderTop: '1px solid var(--oyo-border)', paddingTop: '24px' }}>
-              <div className="sidebar-subtitle">Collections</div>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', marginBottom: '16px', cursor: 'pointer' }}><input type="checkbox" style={{ marginRight: '12px', width: '16px', height: '16px' }} /> Family OYOs</label>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', marginBottom: '16px', cursor: 'pointer' }}><input type="checkbox" style={{ marginRight: '12px', width: '16px', height: '16px' }} /> Friendly neighbourhood stay</label>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', marginBottom: '16px', cursor: 'pointer' }}><input type="checkbox" style={{ marginRight: '12px', width: '16px', height: '16px' }} /> For Group Travellers</label>
-              <label style={{ display: 'flex', alignItems: 'center', fontSize: '14px', marginBottom: '16px', cursor: 'pointer' }}><input type="checkbox" style={{ marginRight: '12px', width: '16px', height: '16px' }} /> Local IDs accepted</label>
-            </div>
           </aside>
 
           {/* Hotel List Area */}
           <main className="oyo-content">
-            <div className="breadcrumbs">
-              <span style={{ color: 'var(--oyo-primary)', cursor: 'pointer' }}>India</span> &gt; Bangalore Hotels
-            </div>
-            
             <div className="content-header">
-              <h1 className="content-title">Hotels in Bangalore ({filteredBusinesses.length} found)</h1>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '12px' }}>
                  <button className="mobile-filter-btn" onClick={() => setShowMobileFilters(!showMobileFilters)}>
                    <Filter size={16} /> Filters
@@ -392,7 +332,7 @@ export default function BusinessDirectory() {
               <div style={{ padding: '60px', textAlign: 'center' }}>Loading properties...</div>
             ) : filteredBusinesses.length === 0 ? (
               <div style={{ padding: '60px', textAlign: 'center', color: 'var(--oyo-text-muted)' }}>
-                 No hotels found matching your filters.
+                 No properties found matching your filters.
               </div>
             ) : (
               <div>
@@ -401,8 +341,8 @@ export default function BusinessDirectory() {
                      <div className="hotel-images">
                        <div className="main-image">
                          {biz.cover_image ? <img src={biz.cover_image} alt="" /> : <div style={{width:'100%',height:'100%',background:'var(--oyo-image-bg)',display:'flex',alignItems:'center',justifyContent:'center'}}><Building2 size={48} color="var(--oyo-border)" /></div>}
-                         <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--oyo-card-bg)', padding: '4px 8px', fontSize: '11px', fontWeight: 800, borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                           <Building2 size={12} /> HOSPITALITY-SERVICED
+                         <span style={{ position: 'absolute', top: '10px', left: '10px', background: 'var(--oyo-card-bg)', padding: '4px 8px', fontSize: '11px', fontWeight: 800, borderRadius: '2px', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', textTransform: 'uppercase' }}>
+                           <Building2 size={12} /> {biz.type}
                          </span>
                        </div>
                        <div className="thumbnail-column">
@@ -417,7 +357,7 @@ export default function BusinessDirectory() {
                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                          <div>
                            <h2 className="hotel-name">{biz.name}</h2>
-                           <p className="hotel-location">{biz.address || 'Kattigenahalli, Bangalore'}</p>
+                           <p className="hotel-location">{biz.address || 'Address not provided'}</p>
                            <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px' }}>
                              <span className="rating-badge"><Star size={10} fill="#fff" /> {biz.rating || '4.5'}</span>
                              <span className="rating-text">({biz.rating_count || '120'} Ratings) · {(biz.rating || 4.5) >= 4.5 ? 'Excellent' : 'Very Good'}</span>

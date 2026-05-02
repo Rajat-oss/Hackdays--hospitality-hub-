@@ -10,6 +10,7 @@ const LoginPage = lazy(() => import('../pages/Auth/Login'))
 const SignupPage = lazy(() => import('../pages/Auth/Signup'))
 const BusinessDirectory = lazy(() => import('../pages/BusinessDirectory'))
 const PublicProfile = lazy(() => import('../pages/PublicProfile'))
+const InquiriesPage = lazy(() => import('../pages/Inquiries'))
 
 // Hotel
 const HotelDashboard = lazy(() => import('../features/hotel/HotelDashboard'))
@@ -110,6 +111,7 @@ export function AppRouter() {
         <Route element={<RoleGuard><DashboardLayout /></RoleGuard>}>
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/storefront" element={<StorefrontManager />} />
+          <Route path="/inquiries" element={<InquiriesPage />} />
         </Route>
 
         {/* 404 */}

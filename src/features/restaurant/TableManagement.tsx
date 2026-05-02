@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useRestaurantStore } from '../../store'
+import { useAuth } from '../auth/AuthContext'
 import { Plus } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import type { TableStatus } from '../../types'
@@ -8,7 +9,9 @@ import styles from './Restaurant.module.css'
 const STATUS_CYCLE: TableStatus[] = ['available', 'occupied', 'reserved']
 
 export default function TableManagement() {
+  const { profile } = useAuth()
   const { tables, addTable, updateTable } = useRestaurantStore()
+  const businessId = profile?.business_id || ''
   const [showModal, setShowModal] = useState(false)
   const [filterStatus, setFilterStatus] = useState<TableStatus | 'all'>('all')
   const [form, setForm] = useState({ number: '', capacity: '4', location: 'Indoor', status: 'available' })
@@ -23,7 +26,7 @@ export default function TableManagement() {
 
   function handleAdd() {
     if (!form.number) return toast.error('Enter table number')
-    addTable({ id: `tbl${Date.now()}`, business_id: 'biz-rest-001', number: form.number, capacity: +form.capacity, location: form.location, status: form.status as TableStatus, created_at: new Date().toISOString() })
+    addTable({ business_id: businessId, number: form.number, capacity: +form.capacity, location: form.location, status: form.status as TableStatus })
     toast.success('Table added')
     setShowModal(false)
   }

@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { useHotelStore } from '../../store'
-import { Plus, Edit2, Trash2, Search } from 'lucide-react'
+import { useAuth } from '../auth/AuthContext'
+import { Plus, Edit2, Trash2, Search, Sparkles } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { enhanceStorefrontDescription } from '../../lib/gemini'
 import type { Room, RoomStatus } from '../../types'
 import styles from './Hotel.module.css'
 
@@ -14,12 +16,15 @@ const STATUS_FILTERS: { label: string; value: RoomStatus | 'all' }[] = [
 ]
 
 export default function RoomManagement() {
+  const { profile } = useAuth()
   const { rooms, addRoom, updateRoom, deleteRoom } = useHotelStore()
+  const businessId = profile?.business_id || ''
   const [filter, setFilter] = useState<RoomStatus | 'all'>('all')
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [editRoom, setEditRoom] = useState<Room | null>(null)
   const [form, setForm] = useState({ number: '', type: 'single', floor: '1', capacity: '1', price_per_night: '', amenities: '', status: 'available' })
+  const [magicLoading, setMagicLoading] = useState(false)
 
   const filtered = rooms.filter(r => {
     if (filter !== 'all' && r.status !== filter) return false
@@ -30,13 +35,27 @@ export default function RoomManagement() {
   function openAdd() { setEditRoom(null); setForm({ number: '', type: 'single', floor: '1', capacity: '1', price_per_night: '', amenities: '', status: 'available' }); setShowModal(true) }
   function openEdit(r: Room) { setEditRoom(r); setForm({ number: r.number, type: r.type, floor: String(r.floor), capacity: String(r.capacity), price_per_night: String(r.price_per_night), amenities: r.amenities.join(', '), status: r.status }); setShowModal(true) }
 
+  async function handleMagicRewrite() {
+    if (!form.amenities) return toast.error("Enter some amenities first!")
+    setMagicLoading(true)
+    try {
+      const res = await enhanceStorefrontDescription(`A ${form.type} room on floor ${form.floor} with: ${form.amenities}`)
+      setForm(p => ({ ...p, amenities: res }))
+      toast.success("AI Rewrote your description!")
+    } catch (err) {
+      toast.error("AI rewrite failed")
+    } finally {
+      setMagicLoading(false)
+    }
+  }
+
   function handleSave() {
     if (!form.number || !form.price_per_night) return toast.error('Fill all required fields')
     if (editRoom) {
       updateRoom(editRoom.id, { number: form.number, type: form.type as any, floor: +form.floor, capacity: +form.capacity, price_per_night: +form.price_per_night, amenities: form.amenities.split(',').map(a => a.trim()).filter(Boolean), status: form.status as any })
       toast.success('Room updated')
     } else {
-      addRoom({ id: `r${Date.now()}`, business_id: 'biz-hotel-001', number: form.number, type: form.type as any, floor: +form.floor, capacity: +form.capacity, price_per_night: +form.price_per_night, amenities: form.amenities.split(',').map(a => a.trim()).filter(Boolean), status: form.status as any, created_at: new Date().toISOString() })
+      addRoom({ business_id: businessId, number: form.number, type: form.type as any, floor: +form.floor, capacity: +form.capacity, price_per_night: +form.price_per_night, amenities: form.amenities.split(',').map(a => a.trim()).filter(Boolean), status: form.status as any })
       toast.success('Room added')
     }
     setShowModal(false)
@@ -170,7 +189,17 @@ export default function RoomManagement() {
                 </select>
               </div>
               <div className="form-group" style={{ gridColumn: '1/-1' }}>
-                <label className="form-label">Amenities (comma-separated)</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <label className="form-label">Amenities / Description</label>
+                  <button 
+                    onClick={handleMagicRewrite} 
+                    disabled={magicLoading}
+                    className="btn btn-sm btn-ghost" 
+                    style={{ color: 'var(--color-teal-light)', fontSize: '11px', gap: '4px', height: '24px' }}
+                  >
+                    {magicLoading ? '...' : <Sparkles size={12} />} Magic Rewrite
+                  </button>
+                </div>
                 <input className="form-input" value={form.amenities} onChange={e => setForm(p => ({ ...p, amenities: e.target.value }))} placeholder="AC, WiFi, TV, Mini Bar" />
               </div>
             </div>

@@ -112,3 +112,72 @@ export async function getPricingInsightsAndAlternatives(businessName: string) {
     return "Consider checking 'The Sunset Inn' for a great budget-friendly option."
   }
 }
+
+export async function getBusinessStrategy(dataSummary: string) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyDd7SCvGj0C3_VKXR933bdRH8Wl8siQCLA"
+  const prompt = `
+    You are a world-class hospitality business consultant. 
+    Analyze the following business data and provide 3 short, actionable, high-impact strategies to increase revenue or efficiency.
+    Keep it professional, encouraging, and specific to the numbers provided.
+    
+    Data Summary: ${dataSummary}
+  `
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 300 } })
+    })
+    const data = await response.json()
+    return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Analyze your peak hours and consider offering mid-week discounts to boost occupancy."
+  } catch (err) {
+    console.error(err)
+    return "Focus on increasing mid-week occupancy and optimizing menu pricing for high-demand items."
+  }
+}
+
+export async function generateInquiryReply(guestName: string, request: string) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyDd7SCvGj0C3_VKXR933bdRH8Wl8siQCLA"
+  const prompt = `
+    You are a professional hotel/restaurant manager. 
+    Draft a polite, welcoming, and helpful reply to a guest named "${guestName}" who sent this request: "${request}".
+    The reply should be professional, address their specific points, and encourage them to finalize the booking.
+    Keep it under 3-4 sentences.
+  `
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, maxOutputTokens: 200 } })
+    })
+    const data = await response.json()
+    return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Thank you for reaching out! We would be delighted to host you. Please let us know if you have any other questions."
+  } catch (err) {
+    console.error(err)
+    return "Thank you for your inquiry. We will get back to you shortly."
+  }
+}
+
+export async function auditTransactions(txHistory: string) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyDd7SCvGj0C3_VKXR933bdRH8Wl8siQCLA"
+  const prompt = `
+    You are a forensic financial auditor for a hospitality group. 
+    Scan the following transaction history and identify any anomalies, potential errors, or suspicious patterns (e.g., unusually low prices for long stays, missing data).
+    If everything looks normal, say "No major anomalies detected."
+    If issues found, list them as short bullet points.
+    
+    Transaction History: ${txHistory}
+  `
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.1, maxOutputTokens: 250 } })
+    })
+    const data = await response.json()
+    return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "No major anomalies detected."
+  } catch (err) {
+    console.error(err)
+    return "Unable to perform audit at this time."
+  }
+}

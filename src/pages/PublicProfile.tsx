@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, collection, addDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import type { Business } from '../types'
 import { Building2, Phone, MapPin, Send, Star, ChevronLeft, Users, Coffee, Sparkles } from 'lucide-react'
@@ -65,8 +65,19 @@ export default function PublicProfile() {
     const toastId = toast.loading('AI Concierge processing request...')
     
     try {
+      // Save inquiry to Firestore
+      await addDoc(collection(db, 'inquiries'), {
+        business_id: business.id,
+        business_name: business.name,
+        name: inquiry.name,
+        phone: inquiry.phone,
+        details: inquiry.details,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      })
+
       const smsMessage = await generateBookingResponse(business.name, inquiry.details, inquiry.phone, inquiry.name)
-      toast.success('Confirmed!', { id: toastId })
+      toast.success('Request sent!', { id: toastId })
       setTimeout(() => alert(smsMessage), 500)
       setInquiry({ name: '', phone: '', details: '' })
     } catch (err) {

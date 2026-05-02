@@ -114,15 +114,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // ── Sign In ──────────────────────────────────────────────
   async function signIn(email: string, password: string) {
-    if (isDemoMode) {
-      const mockProfile = MOCK_USERS[email]
-      if (mockProfile && password === 'demo123') {
-        setProfile(mockProfile)
-        setUser({ uid: mockProfile.id, email: mockProfile.email } as unknown as FirebaseUser)
-        localStorage.setItem('hh_demo_profile', JSON.stringify(mockProfile))
-        return { error: null }
-      }
-      return { error: 'Invalid credentials. Use demo accounts below.' }
+    // Check for demo accounts first, even if not in full demo mode
+    const mockProfile = MOCK_USERS[email]
+    if (mockProfile && password === 'demo123') {
+      setProfile(mockProfile)
+      setUser({ uid: mockProfile.id, email: mockProfile.email } as unknown as FirebaseUser)
+      localStorage.setItem('hh_demo_profile', JSON.stringify(mockProfile))
+      return { error: null }
     }
 
     try {

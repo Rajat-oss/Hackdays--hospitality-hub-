@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useHotelStore } from '../../store'
+import { useAuth } from '../auth/AuthContext'
 import { Plus, Search, CalendarCheck } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import type { Booking, BookingStatus } from '../../types'
@@ -15,7 +16,9 @@ const FILTERS: { label: string; value: BookingStatus | 'all' }[] = [
 ]
 
 export default function BookingSystem() {
+  const { profile } = useAuth()
   const { bookings, rooms, guests, addBooking, updateBooking, addGuest } = useHotelStore()
+  const businessId = profile?.business_id || ''
   const [filter, setFilter] = useState<BookingStatus | 'all'>('all')
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -40,25 +43,24 @@ export default function BookingSystem() {
     return room.price_per_night * nights
   }
 
-  function handleBook() {
+  async function handleBook() {
     if (!form.guest_name || !form.room_id || !form.check_in || !form.check_out) return toast.error('Fill all required fields')
     const room = rooms.find(r => r.id === form.room_id)
     if (!room) return
 
-    const newGuest = { id: `g${Date.now()}`, business_id: 'biz-hotel-001', name: form.guest_name, phone: form.guest_phone, visit_count: 1, created_at: new Date().toISOString() }
-    addGuest(newGuest)
+    await addGuest({ business_id: businessId, name: form.guest_name, phone: form.guest_phone, visit_count: 1 })
+    const { guests: updatedGuests } = useHotelStore.getState()
+    const newGuest = updatedGuests[updatedGuests.length - 1]
 
     const total = calcTotal()
     addBooking({
-      id: `b${Date.now()}`, business_id: 'biz-hotel-001',
-      room_id: form.room_id, guest_id: newGuest.id,
+      business_id: businessId,
+      room_id: form.room_id, guest_id: newGuest?.id || '',
       check_in: form.check_in, check_out: form.check_out,
       type: form.type as any, status: 'confirmed',
       total_amount: total, paid_amount: +(form.paid_amount || 0),
       payment_method: form.payment_method as any,
       special_requests: form.special_requests,
-      created_at: new Date().toISOString(),
-      room, guest: newGuest,
     })
     toast.success(`Booking confirmed for ${form.guest_name}!`)
     setShowModal(false)

@@ -16,6 +16,7 @@ interface HotelStore {
   addRoom: (room: Omit<Room, 'id' | 'created_at'>) => Promise<void>
   updateRoom: (id: string, updates: Partial<Room>) => Promise<void>
   deleteRoom: (id: string) => Promise<void>
+  addGuest: (guest: Omit<Guest, 'id' | 'created_at'>) => Promise<void>
   addBooking: (booking: any) => Promise<void>
   updateBooking: (id: string, updates: Partial<Booking>) => Promise<void>
   addTransaction: (tx: any) => Promise<void>
@@ -87,6 +88,16 @@ export const useHotelStore = create<HotelStore>((set, get) => ({
     try {
       await deleteDoc(doc(db, 'rooms', id))
       set(s => ({ rooms: s.rooms.filter(r => r.id !== id) }))
+    } catch (err) {
+      console.error(err)
+    }
+  },
+
+  addGuest: async (guest) => {
+    try {
+      const data = { ...guest, created_at: new Date().toISOString() }
+      const docRef = await addDoc(collection(db, 'guests'), data)
+      set(s => ({ guests: [...s.guests, { ...data, id: docRef.id } as Guest] }))
     } catch (err) {
       console.error(err)
     }

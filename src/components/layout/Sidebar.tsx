@@ -36,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Billing', to: '/restaurant/billing', icon: Receipt, roles: ['restaurant_admin', 'hybrid_admin'] },
   // Shared
   { label: 'Public View', to: '/storefront', icon: Globe, roles: ['hotel_admin', 'restaurant_admin', 'hybrid_admin'], section: 'Public Presence' },
+  { label: 'Inquiries', to: '/inquiries', icon: Bell, roles: ['hotel_admin', 'restaurant_admin', 'hybrid_admin'] },
   { label: 'Analytics', to: '/analytics', icon: BarChart3, roles: ['hotel_admin', 'restaurant_admin', 'hybrid_admin'], section: 'Reports & Settings' },
   { label: 'Settings', to: '/settings', icon: Settings, roles: ['hotel_admin', 'restaurant_admin', 'hybrid_admin'] },
 ]
