@@ -1,10 +1,10 @@
-import React from 'react'
+import { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './AuthContext'
 import type { UserRole } from '../../types'
 
 interface RoleGuardProps {
-  children: React.ReactNode
+  children: ReactNode
   allowedRoles?: UserRole[]
   redirectTo?: string
 }
@@ -39,7 +39,7 @@ export function RoleGuard({ children, allowedRoles, redirectTo = '/login' }: Rol
   return <>{children}</>
 }
 
-export function GuestGuard({ children }: { children: React.ReactNode }) {
+export function GuestGuard({ children }: { children: ReactNode }) {
   const { isAuthenticated, profile, loading } = useAuth()
 
   if (loading) {
