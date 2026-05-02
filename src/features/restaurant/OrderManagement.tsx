@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useRestaurantStore } from '../../store'
 import { useAuth } from '../auth/AuthContext'
-import { Plus } from 'lucide-react'
+import { Plus, Sparkles, ChefHat, Brain } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { getKitchenInsights, getSuggestiveSell } from '../../lib/gemini'
 import type { Order, OrderStatus } from '../../types'
 import styles from './Restaurant.module.css'
 
@@ -19,6 +20,11 @@ export default function OrderManagement() {
 
   const categories = ['All', ...Array.from(new Set(menu.map(m => m.category)))]
   const filteredMenu = activeCategory === 'All' ? menu : menu.filter(m => m.category === activeCategory)
+
+  const [aiInsights, setAiInsights] = useState('')
+  const [insightsLoading, setInsightsLoading] = useState(false)
+  const [upsellSuggestion, setUpsellSuggestion] = useState('')
+  const [upsellLoading, setUpsellLoading] = useState(false)
 
   const orderTotal = Object.entries(quantities).reduce((s, [id, qty]) => {
     const item = menu.find(m => m.id === id)
@@ -66,6 +72,36 @@ export default function OrderManagement() {
     toast.success(`Order T${order.table?.number} → ${next}`)
   }
 
+  async function handleGetInsights() {
+    setInsightsLoading(true)
+    try {
+      const insight = await getKitchenInsights(activeOrders)
+      setAiInsights(insight)
+    } catch (e) {
+      toast.error("Failed to get insights")
+    } finally {
+      setInsightsLoading(false)
+    }
+  }
+
+  async function handleGetUpsell() {
+    const selectedNames = Object.entries(quantities)
+      .filter(([, q]) => q > 0)
+      .map(([id]) => menu.find(m => m.id === id)?.name || '')
+    
+    if (!selectedNames.length) return
+    
+    setUpsellLoading(true)
+    try {
+      const suggestion = await getSuggestiveSell(selectedNames)
+      setUpsellSuggestion(suggestion)
+    } catch (e) {
+      // fail silently
+    } finally {
+      setUpsellLoading(false)
+    }
+  }
+
   const activeOrders = orders.filter(o => o.status !== 'billed')
 
   return (
@@ -76,6 +112,26 @@ export default function OrderManagement() {
           <p className="page-subtitle">{activeOrders.length} active orders · {orders.filter(o => o.status === 'pending').length} pending</p>
         </div>
         <button onClick={() => setShowNew(true)} className="btn btn-primary"><Plus size={16} /> New Order</button>
+      </div>
+
+      <div style={{ background: 'rgba(212, 175, 55, 0.05)', border: '1px solid rgba(212, 175, 55, 0.1)', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(212, 175, 55, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
+            <ChefHat size={20} />
+          </div>
+          <div>
+            <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--gold)' }}>AI Kitchen Manager</div>
+            <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>{aiInsights || "No active insights. Let Gemini analyze your kitchen flow."}</div>
+          </div>
+        </div>
+        <button 
+          onClick={handleGetInsights} 
+          disabled={insightsLoading}
+          className="btn btn-sm" 
+          style={{ background: 'var(--gold)', color: '#000', border: 'none', borderRadius: '8px', padding: '8px 16px', fontWeight: 600 }}
+        >
+          {insightsLoading ? '...' : <><Brain size={14} /> Analyze Flow</>}
+        </button>
       </div>
 
       <div className={styles.ordersLayout}>
@@ -167,15 +223,31 @@ export default function OrderManagement() {
               </div>
 
               {orderTotal > 0 && (
-                <div className={styles.orderSummary}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>
-                    <span>Subtotal</span><span>₹{orderTotal.toLocaleString()}</span>
+                <div style={{ marginBottom: '16px' }}>
+                  <div className={styles.orderSummary}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                      <span>Subtotal</span><span>₹{orderTotal.toLocaleString()}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                      <span>GST (12%)</span><span>₹{gstAmount}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '17px', fontWeight: 800, color: 'var(--color-cream)' }}>
+                      <span>Total</span><span>₹{(orderTotal + gstAmount).toLocaleString()}</span>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                    <span>GST (12%)</span><span>₹{gstAmount}</span>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '17px', fontWeight: 800, color: 'var(--color-cream)' }}>
-                    <span>Total</span><span>₹{(orderTotal + gstAmount).toLocaleString()}</span>
+                  
+                  <div style={{ marginTop: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Sparkles size={10} /> AI Suggestion
+                      </div>
+                      <button onClick={handleGetUpsell} disabled={upsellLoading} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', fontSize: '10px', textDecoration: 'underline', cursor: 'pointer' }}>
+                        {upsellLoading ? 'Thinking...' : 'Refresh'}
+                      </button>
+                    </div>
+                    <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
+                      {upsellSuggestion || "Add items to see smart pairings..."}
+                    </div>
                   </div>
                 </div>
               )}

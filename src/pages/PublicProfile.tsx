@@ -14,6 +14,7 @@ export default function PublicProfile() {
   const [loading, setLoading] = useState(true)
   const [inquiry, setInquiry] = useState({ name: '', phone: '', details: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
 
   const [dietaryInput, setDietaryInput] = useState('')
   const [dietaryLoading, setDietaryLoading] = useState(false)
@@ -73,13 +74,22 @@ export default function PublicProfile() {
         phone: inquiry.phone,
         details: inquiry.details,
         status: 'pending',
+        item_id: selectedItemId || null,
+        item_type: selectedItemId ? (rooms.some(r => r.id === selectedItemId) ? 'room' : 'table') : null,
         created_at: new Date().toISOString()
       })
 
       const smsMessage = await generateBookingResponse(business.name, inquiry.details, inquiry.phone, inquiry.name)
-      toast.success('Request sent!', { id: toastId })
-      setTimeout(() => alert(smsMessage), 500)
+      
+      if (smsMessage.includes('failed') || smsMessage.includes('Error')) {
+        toast.success('Inquiry saved, but AI Concierge is currently offline.', { id: toastId })
+      } else {
+        toast.success('Confirmed!', { id: toastId })
+        setTimeout(() => alert(inquiry.details.includes('Room') ? `🎟️ OFFICIAL BOOKING SLIP\n\n${smsMessage}` : smsMessage), 500)
+      }
+      
       setInquiry({ name: '', phone: '', details: '' })
+      setSelectedItemId(null)
     } catch (err) {
       toast.error('Failed to process.', { id: toastId })
     } finally {
@@ -115,6 +125,16 @@ export default function PublicProfile() {
     } finally {
       setAlternativesLoading(false)
     }
+  }
+
+  function handleSelectItem(id: string, type: string, label: string) {
+    setSelectedItemId(id)
+    setInquiry(prev => ({
+      ...prev,
+      details: `I would like to book the ${label} ${type}. Please let me know the availability for this weekend.`
+    }))
+    // Scroll to form
+    document.getElementById('ai-booking-form')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   if (loading) {
@@ -346,10 +366,19 @@ export default function PublicProfile() {
                   
                   <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '16px', scrollSnapType: 'x mandatory', margin: '0 -24px', padding: '0 24px 16px' }}>
                     {rooms.map(room => (
-                      <div key={room.id} style={{ flex: '0 0 260px', scrollSnapAlign: 'start', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '20px', padding: '20px' }}>
+                      <div 
+                        key={room.id} 
+                        onClick={() => handleSelectItem(room.id, 'Room', `${room.type.toUpperCase()}`)}
+                        style={{ 
+                          flex: '0 0 260px', scrollSnapAlign: 'start', 
+                          background: selectedItemId === room.id ? 'rgba(212, 175, 55, 0.1)' : 'rgba(255,255,255,0.03)', 
+                          border: `1px solid ${selectedItemId === room.id ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`, 
+                          borderRadius: '20px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s ease'
+                        }}
+                      >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                           <h4 style={{ color: 'white', fontSize: '1.1rem', margin: 0, textTransform: 'capitalize', fontWeight: 700 }}>{room.type} Room</h4>
-                          <span style={{ background: 'rgba(76, 175, 130, 0.1)', color: '#4caf82', padding: '4px 8px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}>1 Left</span>
+                          <span style={{ background: 'rgba(76, 175, 130, 0.1)', color: '#4caf82', padding: '4px 8px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}>Available</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', marginBottom: '16px' }}>
                           <Users size={14} /> Up to {room.capacity} guests
@@ -360,7 +389,16 @@ export default function PublicProfile() {
                       </div>
                     ))}
                     {tables.map(table => (
-                      <div key={table.id} style={{ flex: '0 0 260px', scrollSnapAlign: 'start', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '20px', padding: '20px' }}>
+                      <div 
+                        key={table.id} 
+                        onClick={() => handleSelectItem(table.id, 'Table', `Table ${table.number}`)}
+                        style={{ 
+                          flex: '0 0 260px', scrollSnapAlign: 'start', 
+                          background: selectedItemId === table.id ? 'rgba(212, 175, 55, 0.1)' : 'rgba(255,255,255,0.03)', 
+                          border: `1px solid ${selectedItemId === table.id ? 'var(--gold)' : 'rgba(255,255,255,0.08)'}`, 
+                          borderRadius: '20px', padding: '20px', cursor: 'pointer', transition: 'all 0.3s ease'
+                        }}
+                      >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                           <h4 style={{ color: 'white', fontSize: '1.1rem', margin: 0, fontWeight: 700 }}>Table {table.number}</h4>
                           <span style={{ background: 'rgba(76, 175, 130, 0.1)', color: '#4caf82', padding: '4px 8px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 700 }}>Open</span>

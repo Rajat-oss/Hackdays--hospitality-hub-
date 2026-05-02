@@ -3,7 +3,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../../lib/firebase'
 import { useAuth } from '../auth/AuthContext'
 import { toast } from 'react-hot-toast'
-import { Save, Image as ImageIcon, Globe, Eye, Sparkles } from 'lucide-react'
+import { Save, Image as ImageIcon, Globe, Eye, Sparkles, Upload, X } from 'lucide-react'
 import type { Business } from '../../types'
 import { enhanceStorefrontDescription } from '../../lib/gemini'
 
@@ -120,22 +120,46 @@ export default function StorefrontManager() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Cover Image URL</label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <input 
-                type="url" 
-                className="form-input" 
-                placeholder="https://images.unsplash.com/photo-..."
-                value={business.cover_image || ''}
-                onChange={e => setBusiness({ ...business, cover_image: e.target.value })}
-                style={{ flex: 1 }}
-              />
+            <label className="form-label">Cover Image</label>
+            <div style={{ position: 'relative', width: '100%', height: '200px', borderRadius: '16px', overflow: 'hidden', border: '2px dashed var(--border-default)', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}>
+              {business.cover_image ? (
+                <>
+                  <img src={business.cover_image} alt="Cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <button 
+                    type="button" 
+                    onClick={() => setBusiness({ ...business, cover_image: '' })}
+                    style={{ position: 'absolute', top: '12px', right: '12px', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.9)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none', boxShadow: '0 2px 10px rgba(0,0,0,0.2)' }}
+                  >
+                    <X size={16} />
+                  </button>
+                </>
+              ) : (
+                <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                  <Upload size={32} />
+                  <div style={{ fontSize: '14px', fontWeight: 500 }}>Click to upload cover image</div>
+                  <div style={{ fontSize: '11px' }}>PNG, JPG or WEBP (Max 800KB)</div>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    style={{ display: 'none' }}
+                    onChange={e => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        if (file.size > 800000) {
+                          toast.error("Image too large! Please use a smaller image (< 800KB)")
+                          return
+                        }
+                        const reader = new FileReader()
+                        reader.onloadend = () => {
+                          setBusiness({ ...business, cover_image: reader.result as string })
+                        }
+                        reader.readAsDataURL(file)
+                      }
+                    }}
+                  />
+                </label>
+              )}
             </div>
-            {business.cover_image && (
-              <div style={{ marginTop: '12px', width: '100%', height: '160px', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-subtle)' }}>
-                <img src={business.cover_image} alt="Cover Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-            )}
           </div>
 
           <div className="form-group">
