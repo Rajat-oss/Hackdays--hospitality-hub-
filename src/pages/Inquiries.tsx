@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { collection, query, where, getDocs, updateDoc, doc, orderBy } from 'firebase/firestore'
+import { useEffect, useState } from 'react'
+import { collection, query, where, getDocs, updateDoc, doc, orderBy, addDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import { useAuth } from '../features/auth/AuthContext'
-import { Bell, Search, CheckCircle, Clock, Trash2, MessageSquare, Sparkles } from 'lucide-react'
+import { Bell, CheckCircle, Trash2, Sparkles } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { format } from 'date-fns'
 import { generateInquiryReply } from '../lib/gemini'
@@ -21,7 +21,6 @@ interface Inquiry {
 
 export default function InquiriesPage() {
   const { profile } = useAuth()
-  const { addGuest, addBooking } = useHotelStore()
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
   const [loading, setLoading] = useState(true)
   const [actioningId, setActioningId] = useState<string | null>(null)

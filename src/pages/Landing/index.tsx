@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import s from './Landing.module.css'
 
@@ -20,14 +20,7 @@ function useScrollReveal() {
   }, [])
 }
 
-/* ── PLACEHOLDER IMAGE COMPONENT ──────────────────────────── */
-function ImgPlaceholder({ className, text = "Image Placement" }: { className: string, text?: string }) {
-  return (
-    <div className={`${s.imgPlaceholder} ${className}`}>
-      <span className={s.imgPlaceholderText}>{text}</span>
-    </div>
-  )
-}
+
 
 export default function Landing() {
   useScrollReveal()

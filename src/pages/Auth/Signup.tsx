@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -38,7 +38,7 @@ export default function SignupPage() {
 
   async function onSubmit(data: FormData) {
     setLoading(true)
-    const { error, session } = await signUp(data.email, data.password, data.name, data.role, data.businessName, data.phone)
+    const { error } = await signUp(data.email, data.password, data.name, data.role, data.businessName, data.phone)
     setLoading(false)
 
     if (error) {

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy } from 'firebase/firestore'
+import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import type { Room, Booking, Guest, Transaction, RestaurantTable, MenuItem, Order } from '../types'
 

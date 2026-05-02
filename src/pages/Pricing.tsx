@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { LandingNav } from './Landing/LandingNav'
 import { CheckCircle2, Star, ArrowRight } from 'lucide-react'

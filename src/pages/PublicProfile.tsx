@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { doc, getDoc, collection, addDoc } from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import type { Business } from '../types'
-import { Building2, Phone, MapPin, Send, Star, ChevronLeft, Users, Coffee, Sparkles } from 'lucide-react'
+import { Phone, MapPin, Send, Star, ChevronLeft, Users, Coffee, Sparkles } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { generateBookingResponse, getDietaryMenuMatch, getPricingInsightsAndAlternatives } from '../lib/gemini'
 

@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { RoleGuard, GuestGuard } from '../features/auth/RoleGuard'
 import { DashboardLayout } from '../components/layout/DashboardLayout'
